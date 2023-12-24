@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<h1> NOTICIAS <h1>
+
+<ul> 
+    {% for noticia in noticias %}
+    <li>
+        <a href="{% url 'noticia_detalles' noticia.id %}">
+            <button>
+                Actualizar
+            </button>
+        </a>
+            <p>{{noticia.descripcion}}</p>
+            <p>{{noticia.user.username}}</p>
+    </li>
+
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

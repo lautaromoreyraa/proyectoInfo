@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Proyecto Informatorio</title>
+</head>
+<body>
+
+    <nav> 
+        <ul>
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li>
+                <a href="/noticias">Noticias</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li>
+                <a href="/noticias/crear">Crear noticias</a>
+            </li>
+            <li>
+                <a href="/logout">Logout</a>
+            </li>
+            {% else %}
+            <li>
+                <a href="/singup">Singup</a>
+            </li>
+            <li>
+                <a href="/singin">Singin</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>
