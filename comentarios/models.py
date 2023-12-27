@@ -15,7 +15,7 @@ class Comentario(models.Model):
         auto_now = True
     )
 
-    textoComentario = models.TextField(max_length=400)
+    comentario = models.TextField(max_length=400)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     noticia = models.ForeignKey(Noticia, on_delete=models.CASCADE)
 

@@ -1,0 +1,23 @@
+{% extends "noticias.html" %}
+
+{% block content %}
+
+<h1> COMENTARIOS <h1>
+
+<ul> 
+    {% for comenta in comentarios %}
+    <li>
+        <a href="{% url 'noticia_detalles' noticia.id %}">
+            <button>
+                Actualizar
+            </button>
+        </a>
+            <p>{{comenta.textoComentario}}</p>
+            <p>{{comenta.usuario}}</p>
+    </li>
+
+    {% endfor %}
+</ul>
+
+
+{% endblock %}
