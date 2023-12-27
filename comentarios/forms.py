@@ -4,4 +4,9 @@ from .models import Comentario
 class ComentarioForm(ModelForm):
     class Meta:
         model = Comentario
-        fields = ['usuario', 'textoComentario']
+        fields = ['usuario', 'comentario']
+
+class ComentarioFormEditado(ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ['usuario', 'comentario']
