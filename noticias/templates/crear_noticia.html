@@ -14,7 +14,7 @@
                 </div>
             {% endif %}
 
-            <form action="{% url 'crear_noticia' %}" method="post" class="mb-5">
+            <form action="{% url 'crear_noticia' %}" method="post" enctype="multipart/form-data" class="mb-5">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="id_titulo" class="form-label">Título</label>
@@ -24,7 +24,10 @@
                     <label for="id_descripcion" class="form-label">Descripción</label>
                     {{ form.descripcion }}
                 </div>
-                <!-- Agrega aquí los otros campos del formulario si los hay -->
+                <div class="mb-3">
+                    <label for="id_imagen" class="form-label">Imagen</label>
+                    {{ form.imagen }}
+                </div>
                 <button type="submit" class="btn btn-primary">Guardar</button>
             </form>
         </div>

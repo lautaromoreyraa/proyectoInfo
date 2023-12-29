@@ -8,7 +8,7 @@ from .forms import NoticiaForm
 from .models import Noticia
 from comentarios.models import Comentario
 from django.core.mail import send_mail
-
+from .forms import CustomUserCreationForm
 
 def home(request):
     ultimas_noticias = Noticia.objects.order_by('-fecha')[:3]
@@ -16,27 +16,14 @@ def home(request):
 
 
 def singup(request):
-    if request.method == 'GET' :
-        return render(request, 'singup.html',{
-        'form' : UserCreationForm
-    })
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
     else:
-        if request.POST['password1'] == request.POST['password2']:
-            try:
-                user = User.objects.create_user(username=request.POST['username'], 
-                password= request.POST['password1'])
-                user.save()
-                login(request, user)
-                return redirect('noticias')
-            except IntegrityError:
-                return render(request, 'singup.html',{
-                'form' : UserCreationForm,
-                "error": 'El usuario ya existe'
-                })
-        return render(request, 'singup.html',{
-                'form' : UserCreationForm,
-                "error": 'Las contraseñas no coinciden'
-                })
+        form = CustomUserCreationForm()
+    
+    return render(request, 'singup.html', {'form': form})
         
 def noticias(request):
     noticias = Noticia.objects.all()
@@ -66,38 +53,35 @@ def abrir_sesion(request):
             return redirect ('noticias')
 
 def crear_noticia(request):
-    
-    if request.method == 'GET':
-        return render(request, 'crear_noticia.html',{
-            'form': NoticiaForm
-        })
-    else:
-        try:  
-            form = NoticiaForm(request.POST)
+    if request.method == 'POST':
+        form = NoticiaForm(request.POST, request.FILES)
+        if form.is_valid():
             nueva_noticia = form.save(commit=False)
             nueva_noticia.user = request.user
+            # Guardar la imagen asociada a la noticia
+            if 'imagen' in request.FILES:
+                nueva_noticia.imagen = request.FILES['imagen']
             nueva_noticia.save()
             return redirect('noticias')
-        except ValueError:
-            return render(request, 'crear_noticia.html',{
-                'form': NoticiaForm,
-                "error": 'Ingresa datos validos'
-            })
+        else:
+            # Manejar el caso cuando el formulario no es válido
+            return render(request, 'crear_noticia.html', {'form': form, 'error': 'Ingresa datos válidos'})
+    else:
+        form = NoticiaForm()
+    return render(request, 'crear_noticia.html', {'form': form})
 
 def noticia_editar(request, pk):
     noticia = get_object_or_404(Noticia, pk=pk, user=request.user)
 
-    if request.method == 'GET':
-        form = NoticiaForm(instance=noticia)
-        return render(request, 'noticia_editar.html', {'noticia': noticia, 'form': form})
-    else:  
-        form = NoticiaForm(request.POST, instance=noticia)
-
+    if request.method == 'POST':
+        form = NoticiaForm(request.POST, request.FILES, instance=noticia)
         if form.is_valid():
             form.save()
             return redirect('noticias')
-        else:
-            return render(request, 'noticia_editar.html', {'noticia': noticia, 'form': form, 'error': "Error al actualizar la noticia"})
+    else:
+        form = NoticiaForm(instance=noticia)
+
+    return render(request, 'noticia_editar.html', {'noticia': noticia, 'form': form})
          
 def borrar_noticia(request, pk):
     noticia = get_object_or_404(Noticia, pk= pk, user= request.user)

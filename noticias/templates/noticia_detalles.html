@@ -15,7 +15,12 @@
                 </header>
                 <!-- Preview image figure-->
                 <figure class="mb-4 text-center">
-                    <img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." />
+                    <!-- Mostrar la imagen de la noticia -->
+                    {% if noticia.imagen %}
+                    <img class="img-fluid rounded" src="{{ noticia.imagen.url }}" alt="{{ noticia.titulo }}" />
+                    {% else %}
+                    <img class="img-fluid rounded" src="{% static 'ruta/de/imagen/por/defecto.jpg' %}" alt="Imagen por defecto" />
+                    {% endif %}
                     <!-- Botón de editar la noticia -->
                     {% if noticia.user == request.user %}
                     <div style="text-align: right;">
@@ -50,6 +55,8 @@
                             <textarea name="comentario" class="form-control" rows="3" placeholder="¡Únete a la discusión y deja un comentario!"></textarea>
                             <input type="submit" value="COMENTAR" class="btn btn-primary mt-2">
                         </form>
+                        {% else %}
+                        <p>Para dejar un comentario, por favor <a href="{% url 'singin' %}">inicia sesión</a>.</p>
                         {% endif %}
                         
                         <!-- Espacio adicional entre formulario y comentarios -->

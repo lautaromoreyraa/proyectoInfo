@@ -1,16 +1,42 @@
 {% extends "base.html" %}
 
-
 {% block content %}
-<h1> SINGIN <h1> 
+<div class="container mt-5 d-flex justify-content-center align-items-center">
+  <!-- Pills navs -->
+  <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+  </ul>
+  <!-- Pills navs -->
 
-{{error}}
+  <!-- Pills content -->
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+      <form action="/singin/" method="POST" class="text-center">
+        {% csrf_token %}
+        {{ form.username.label_tag }}
+        <div class="form-outline mb-4">
+          <input type="text" id="loginName" name="username" class="form-control" />
+        </div>
 
-<form action="/singin/" method="POST">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button>
-        Iniciar sesión
-    </button>
-</form>
-{% endblock%}
+        {{ form.password.label_tag }}
+        <div class="form-outline mb-4">
+          <input type="password" id="loginPassword" name="password" class="form-control" />
+        </div>
+
+        {% if error %}
+          <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-block mb-2">Iniciar sesión</button>
+          <a href="/singup" class="btn btn-secondary btn-block">Registrate</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+      <!-- Your register form content here -->
+    </div>
+  </div>
+  <!-- Pills content -->
+</div>
+{% endblock %}

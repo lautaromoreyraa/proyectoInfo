@@ -13,16 +13,17 @@
                     <!-- Post title-->
                     <h1 class="fw-bolder mb-1">{{ noticia.titulo }}</h1>
                 </header>
+
                 <!-- Preview image figure-->
                 <figure class="mb-4 text-center">
-                    <img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." />
-                    <!-- Botón de editar la noticia -->
-                    {% if noticia.user == request.user %}
-                    <div class="text-end">
-                        <a href="{% url 'noticia_editar' noticia.pk %}" class="btn btn-primary">Editar</a>
-                    </div>
+                    <!-- Mostrar la imagen de la noticia -->
+                    {% if noticia.imagen %}
+                    <img class="img-fluid rounded" src="{{ noticia.imagen.url }}" alt="{{ noticia.titulo }}" />
+                    {% else %}
+                    <img class="img-fluid rounded" src="{% static 'ruta/de/imagen/por/defecto.jpg' %}" alt="Imagen por defecto" />
                     {% endif %}
                 </figure>
+
                 <!-- Post content-->
                 <section class="mb-5">
                     <p>{{ noticia.descripcion }}</p>
@@ -33,10 +34,16 @@
 
                     <!-- Formulario para editar la noticia -->
                     {% if noticia.user == request.user %}
-                    <form method="POST" class="mt-4">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                        <label for="id_imagen">Imagen:</label>
+                        {{ form.imagen }}
+                        <br>
+                        <label for="id_titulo">Título:</label>
+                        {{ form.titulo }}
+                        <!-- Otros campos del formulario -->
+                        {{ form.descripcion }}
+                        <button type="submit" class="btn btn-primary mt-2">Actualizar</button>
                     </form>
                     <form action="{% url 'borrar_noticia' noticia.pk %}" method="POST">
                         {% csrf_token %}

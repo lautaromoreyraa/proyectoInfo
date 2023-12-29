@@ -1,18 +1,35 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<h1>Singup</h1>
+<div class="container mt-5">
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <form action="/singup/" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="id_username" class="form-label">Usuario</label>
+              <input type="text" class="form-control" id="id_username" name="username" placeholder="Ingrese su usuario">
+            </div>
+            <div class="mb-3">
+              <label for="id_password1" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="id_password1" name="password1" placeholder="Ingrese su contraseña">
+            </div>
+            <div class="mb-3">
+              <label for="id_password2" class="form-label">Repetir Contraseña</label>
+              <input type="password" class="form-control" id="id_password2" name="password2" placeholder="Repita su contraseña">
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary mt-4">Registrarse</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-{{error}}
-
-<form action= "/singup/" method="POST">
-    {% csrf_token %}
-    {{form.as_p}}
-    
-    <button>
-            Singup
-    </button>
-
-</form>
-
+<!-- Vincula tu archivo de estilos CSS -->
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 {% endblock %}
