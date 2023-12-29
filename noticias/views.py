@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 from .forms import NoticiaForm
 from .models import Noticia
+from comentarios.models import Comentario
 
 
 def home(request):
@@ -37,6 +38,7 @@ def singup(request):
 def noticias(request):
     noticias = Noticia.objects.all()
     return render(request, 'noticias.html', {'noticias': noticias})
+
 
 def cerrar_sesion(request):
     logout(request)
@@ -79,16 +81,32 @@ def crear_noticia(request):
                 "error": 'Ingresa datos validos'
             })
 
-def noticia_detalles(request, noticia_id):
+def noticia_editar(request, pk):
+    noticia = get_object_or_404(Noticia, pk=pk, user=request.user)
+
     if request.method == 'GET':
-        noticia = get_object_or_404(Noticia, pk=noticia_id, user=request.user)
         form = NoticiaForm(instance=noticia)
-        return render(request, 'noticia_detalles.html',{'noticia': noticia, 'form': form})
-    else:
-        try:
-            noticia = get_object_or_404(Noticia, pk=noticia_id, user=request.user)
-            NoticiaForm(request.POST, instance=noticia)
+        return render(request, 'noticia_detalles.html', {'noticia': noticia, 'form': form})
+    else:  
+        form = NoticiaForm(request.POST, instance=noticia)
+
+        if form.is_valid():
             form.save()
-            return redirect ('noticias')
-        except ValueError:
-            return render(request, 'noticia_detalles.html',{'noticia': noticia, 'form': form, 'error': "Error al actualizar la noticia"})
+            return redirect('noticias')
+        else:
+            return render(request, 'noticia_detalles.html', {'noticia': noticia, 'form': form, 'error': "Error al actualizar la noticia"})
+         
+def borrar_noticia(request, pk):
+    noticia = get_object_or_404(Noticia, pk= pk, user= request.user)
+    if request.method == 'POST':
+        noticia.delete()
+        return redirect('noticias')
+
+def noticia_detalles(request, pk):
+    noticia = get_object_or_404(Noticia, pk=pk)
+    comentarios = Comentario.objects.filter(noticia=noticia)
+
+    ctx = {'noticia': noticia, 'comentarios': comentarios}
+    return render(request, 'noticias_ver.html', ctx)
+
+

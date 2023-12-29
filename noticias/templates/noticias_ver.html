@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<h1> {{noticia.titulo}} </h1> 
+
+    {{error}}
+    </a>
+    <p>{{noticia.descripcion}}</p>
+    <p>{{noticia.user.username}}</p>
+
+	{% if noticia.user == request.user %}
+	<a href="{% url 'noticia_editar' noticia.pk %}">
+	  <button>Editar</button>
+	</a>
+	{% endif %}
+    </a>
+
+    <h4>COMENTARIOS</h4>
+
+	{% for c in comentarios %}
+		<div>
+			{{c.usuario}} : {{c.texto}} 
+			{% if request.user == c.usuario %}
+			<a href="{% url 'comentarios:borrar_comentario' c.pk%}">borrar</a> - <a href="{% url 'comentarios:modificar_comentario' c.pk%}">modificar</a>
+			{% endif %}
+		</div>
+	{% endfor %}
+
+	{% if request.user.is_authenticated %}
+	<form method="POST" action="{% url 'comentarios:agregar' noticia.pk %}">{% csrf_token %}
+		<textarea name="comentario"></textarea>
+		<input type="submit" name="" value="COMENTAR">
+	</form>
+	{% endif %}
+
+	<div style="height: 100px;"></div>
+
+{% endblock %}

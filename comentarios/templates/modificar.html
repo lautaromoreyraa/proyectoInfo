@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div>
+    <h3 class="mb-4">MODIFICAR COMENTARIO: "{{ form.instance.texto }}"</h3>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Confirmar</button>
+    </form>
+  </div>
+{% endblock content %}
+
+

@@ -5,15 +5,11 @@
 <h1> creando noticias </h1>
 
     {{error}}
-
-<form action="/noticias/crear" method="POST">
+    
+    <form action="{% url 'crear_noticia' %}" method="post">
         {% csrf_token %}
-
-        {{form}}
-
-        <button>
-            Save
-        </button>
-
+        {{ form }}
+        <button>Guardar</button>
+    </form>
 </form>
 {%endblock%}

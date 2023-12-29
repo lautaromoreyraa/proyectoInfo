@@ -15,16 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from noticias import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
+    #General
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('singup/', views.singup, name='singup'),
+    #Noticias
     path('noticias/', views.noticias, name='noticias'),
+    path('noticias/detalle/<int:pk>', views.noticia_detalles, name='noticia_detalles'),
+    path('noticias/crear', views.crear_noticia, name='crear_noticia'),
+    path('noticias/editar/<int:pk>', views.noticia_editar, name='noticia_editar'),
+    path('noticias/borrar/<int:pk>', views.borrar_noticia, name='borrar_noticia'),
+    #Usuarios
+    path('singup/', views.singup, name='singup'),
     path('logout/', views.cerrar_sesion, name='logout'),
     path('singin/', views.abrir_sesion, name='singin'),
-    path('noticias/crear', views.crear_noticia, name='crear_noticia'),
-    path('noticias/<noticia_id>/', views.noticia_detalles, name='noticia_detalles'),
+    #Comentarios
+    path('Comentarios/', include('comentarios.urls')),
 ] 
+urlpatterns += staticfiles_urlpatterns()

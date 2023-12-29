@@ -15,11 +15,13 @@
             Actualizar
         </button>
     </form>
-    <form action="{% url 'borrar_noticia' noticia.pk %}"method="POST">
+    <form action="{% url 'noticia_borrar' noticia.pk %}"method="POST">
         {% csrf_token %}
         <button>
             Borrar
         </button>
     </form>
 
-    {% endblock %}
+
+
+{% endblock %}
