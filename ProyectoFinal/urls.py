@@ -23,6 +23,8 @@ urlpatterns = [
     #General
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('about/', views.about, name='about'),
+    path('contacto/', views.contact, name='contact'),
     #Noticias
     path('noticias/', views.noticias, name='noticias'),
     path('noticias/detalle/<int:pk>', views.noticia_detalles, name='noticia_detalles'),

@@ -1,25 +1,75 @@
 {% extends 'base.html' %}
-
-
-
+{% load static %}
 {% block content %}
 
-<h1> {{noticia.titulo}} </h1> 
+<!-- Page content-->
+<div class="container mt-5 content-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Post content-->
+            <article>
+                <!-- Post header-->
+                <header class="mb-4 text-center">
+                    <!-- Post title-->
+                    <h1 class="fw-bolder mb-1">{{ noticia.titulo }}</h1>
+                </header>
+                <!-- Preview image figure-->
+                <figure class="mb-4 text-center">
+                    <img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." />
+                    <!-- Botón de editar la noticia -->
+                    {% if noticia.user == request.user %}
+                    <div style="text-align: right;">
+                        <a href="{% url 'noticia_editar' noticia.pk %}" class="btn btn-primary">Editar</a>
+                    </div>
+                    {% endif %}
+                </figure>
+                <!-- Post content-->
+                <section class="mb-5">
+                    <p>{{ noticia.descripcion }}</p>
+                    <!-- Post meta content (Usuario y Fecha) -->
+                    <div class="text-muted fst-italic mb-2">
+                        Publicado por {{ noticia.user.username }} el {{ noticia.fecha }}
+                    </div>
+                </section>
+            </article>
 
-    {{error}}
+            <!-- Título de comentarios -->
+            <h2>Comentarios</h2>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button>
-            Actualizar
-        </button>
-    </form>
-    <form action="{% url 'borrar_noticia' noticia.pk %}"method="POST">
-        {% csrf_token %}
-        <button>
-            Borrar
-        </button>
-    </form>
+            <!-- Espacio entre formulario de comentario y comentarios -->
+            <div style="margin-bottom: 20px;"></div>
 
-    {% endblock %}
+            <!-- Comments section-->
+            <section class="mb-5">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <!-- Comment form -->
+                        {% if request.user.is_authenticated %}
+                        <form method="POST" action="{% url 'comentarios:agregar' noticia.pk %}">
+                            {% csrf_token %}
+                            <textarea name="comentario" class="form-control" rows="3" placeholder="¡Únete a la discusión y deja un comentario!"></textarea>
+                            <input type="submit" value="COMENTAR" class="btn btn-primary mt-2">
+                        </form>
+                        {% endif %}
+                        
+                        <!-- Espacio adicional entre formulario y comentarios -->
+                        <div style="margin-bottom: 20px;"></div>
+
+                        <!-- Comments -->
+                        {% for c in comentarios %}
+                        <div class="mb-4">
+                            <!-- Comment -->
+                            <div class="fw-bold">{{ c.usuario }}: {{ c.texto }}</div>
+                            {% if request.user == c.usuario %}
+                            <a href="{% url 'comentarios:borrar_comentario' c.pk %}">borrar</a> - <a href="{% url 'comentarios:modificar_comentario' c.pk %}">modificar</a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Page content-->
+<div class="container mt-5 content-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Post content-->
+            <article>
+                <!-- Post header-->
+                <header class="mb-4 text-center">
+                    <!-- Post title-->
+                    <h1 class="fw-bolder mb-1">{{ noticia.titulo }}</h1>
+                </header>
+                <!-- Preview image figure-->
+                <figure class="mb-4 text-center">
+                    <img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." />
+                    <!-- Botón de editar la noticia -->
+                    {% if noticia.user == request.user %}
+                    <div class="text-end">
+                        <a href="{% url 'noticia_editar' noticia.pk %}" class="btn btn-primary">Editar</a>
+                    </div>
+                    {% endif %}
+                </figure>
+                <!-- Post content-->
+                <section class="mb-5">
+                    <p>{{ noticia.descripcion }}</p>
+                    <!-- Post meta content (Usuario y Fecha) -->
+                    <div class="text-muted fst-italic mb-2">
+                        Publicado por {{ noticia.user.username }} el {{ noticia.fecha }}
+                    </div>
+
+                    <!-- Formulario para editar la noticia -->
+                    {% if noticia.user == request.user %}
+                    <form method="POST" class="mt-4">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </form>
+                    <form action="{% url 'borrar_noticia' noticia.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+                    </form>
+                    {% endif %}
+                </section>
+            </article>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

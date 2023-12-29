@@ -7,10 +7,13 @@ from django.db import IntegrityError
 from .forms import NoticiaForm
 from .models import Noticia
 from comentarios.models import Comentario
+from django.core.mail import send_mail
 
 
 def home(request):
-    return render(request, 'home.html')
+    ultimas_noticias = Noticia.objects.order_by('-fecha')[:3]
+    return render(request, 'home.html', {'ultimas_noticias': ultimas_noticias})
+
 
 def singup(request):
     if request.method == 'GET' :
@@ -86,7 +89,7 @@ def noticia_editar(request, pk):
 
     if request.method == 'GET':
         form = NoticiaForm(instance=noticia)
-        return render(request, 'noticia_detalles.html', {'noticia': noticia, 'form': form})
+        return render(request, 'noticia_editar.html', {'noticia': noticia, 'form': form})
     else:  
         form = NoticiaForm(request.POST, instance=noticia)
 
@@ -94,7 +97,7 @@ def noticia_editar(request, pk):
             form.save()
             return redirect('noticias')
         else:
-            return render(request, 'noticia_detalles.html', {'noticia': noticia, 'form': form, 'error': "Error al actualizar la noticia"})
+            return render(request, 'noticia_editar.html', {'noticia': noticia, 'form': form, 'error': "Error al actualizar la noticia"})
          
 def borrar_noticia(request, pk):
     noticia = get_object_or_404(Noticia, pk= pk, user= request.user)
@@ -107,6 +110,24 @@ def noticia_detalles(request, pk):
     comentarios = Comentario.objects.filter(noticia=noticia)
 
     ctx = {'noticia': noticia, 'comentarios': comentarios}
-    return render(request, 'noticias_ver.html', ctx)
+    return render(request, 'noticia_detalles.html', ctx)
 
+def about(request):
+    return render(request, 'about.html')
 
+def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+        send_mail(
+            f'Mensaje de {name}',
+            f'Email: {email}\nTeléfono: {phone}\n\nMensaje: {message}',
+            email,  # Desde
+            ['lautaromoreyra144@gmail.com'],  # A
+            fail_silently=False,
+        )
+        return render(request, 'contact.html', {'success': True})  # Puedes enviar una confirmación
+
+    return render(request, 'contact.html')  # Si es un GET, solo muestra la página de contacto
