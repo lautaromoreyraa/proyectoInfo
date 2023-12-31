@@ -1,7 +1,7 @@
 from django import forms
 from .models import Noticia
 from django.contrib.auth.forms import UserCreationForm
-
+from django.contrib.auth.models import User
 
 class NoticiaForm(forms.ModelForm):
     class Meta:
@@ -15,17 +15,16 @@ class NoticiaForm(forms.ModelForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
-    def __init__(self, *args, **kwargs):
-        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
 
-        # Personalizar los mensajes de error
-        self.fields['password1'].error_messages = {
-            'password_too_short': 'La contraseña es demasiado corta.',
-            'password_entirely_numeric': 'La contraseña no puede ser completamente numérica.',
-            'password_common_sequences': 'La contraseña es demasiado común.',
-            'password_too_similar': 'La contraseña es demasiado similar a la información personal.',
-        }
+        if not password1 or not password2:
+            raise forms.ValidationError("Los campos de contraseña son obligatorios.")
 
-        self.fields['password2'].error_messages = {
-            'password_mismatch': 'Las contraseñas no coinciden.',
-        }
+        return cleaned_data
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields
