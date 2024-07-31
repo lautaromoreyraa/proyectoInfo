@@ -1,8 +1,9 @@
-Proyecto Final Informatorio - Presento una pagina web tipo blog con tematica de los emprendimientos del Chaco
+Proyecto Final Informatorio etapa 2 - Presento una pagina web tipo blog con tematica de los emprendimientos del Chaco
 
 
 Construido 🛠️
-python 
+python
+django
 html-css 
 visual studio code
 
